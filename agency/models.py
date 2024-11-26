@@ -11,12 +11,15 @@ class Cat(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["name", "years", "breed", "salary"],
-                name="unique_cat_combination")
+                name="unique_cat_combination",
+            )
         ]
 
 
 class Mission(models.Model):
-    cat = models.ForeignKey(Cat, on_delete=models.CASCADE, related_name="Missions", blank=True, null=True)
+    cat = models.ForeignKey(
+        Cat, on_delete=models.CASCADE, related_name="Missions", blank=True, null=True
+    )
     mission_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -27,4 +30,6 @@ class Target(models.Model):
     country = models.CharField(max_length=100)
     notes = models.TextField(null=True, blank=True)
     target_completed = models.BooleanField(default=False)
-    mission = models.ForeignKey(Mission, on_delete=models.CASCADE, related_name="targets")
+    mission = models.ForeignKey(
+        Mission, on_delete=models.CASCADE, related_name="targets"
+    )

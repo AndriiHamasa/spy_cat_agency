@@ -27,10 +27,10 @@ class CatSerializer(serializers.ModelSerializer):
     def validate(self, data):
 
         if Cat.objects.filter(
-                name=data["name"],
-                years=data["years"],
-                breed=data["breed"],
-                salary=data["salary"]
+            name=data["name"],
+            years=data["years"],
+            breed=data["breed"],
+            salary=data["salary"],
         ).exists():
             raise serializers.ValidationError(
                 "A cat with the same name, years, breed, and salary already exists."
@@ -60,7 +60,14 @@ class MissionDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mission
-        fields = ("id", "cat", "mission_completed", "targets", "created_at", "updated_at")
+        fields = (
+            "id",
+            "cat",
+            "mission_completed",
+            "targets",
+            "created_at",
+            "updated_at",
+        )
 
 
 class MissionListSerializer(MissionDetailSerializer):
@@ -91,7 +98,7 @@ class MissionCreateSerializer(serializers.ModelSerializer):
         if len(target_names) != len(set(target_names)):
             raise serializers.ValidationError(
                 "Targets should be unique in one mission.",
-                code="duplicate_target_names"
+                code="duplicate_target_names",
             )
 
         for target_data in targets_data:

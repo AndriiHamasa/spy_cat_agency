@@ -11,7 +11,7 @@ from agency.serializers import (
     MissionCreateSerializer,
     MissionDetailSerializer,
     MissionAssignCatSerializer,
-    TargetSerializer
+    TargetSerializer,
 )
 
 
@@ -31,13 +31,13 @@ class CatViewSet(viewsets.ModelViewSet):
         if request.method != "PATCH":
             return Response(
                 {"error": "Only PATCH method is allowed for updating salary"},
-                status=status.HTTP_405_METHOD_NOT_ALLOWED
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
 
         if any(field not in ["salary"] for field in request.data.keys()):
             return Response(
                 {"error": "Only 'salary' field can be updated"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         cat = self.get_object()
@@ -59,7 +59,10 @@ class TargetViewSet(viewsets.ModelViewSet):
         target = self.get_object()
 
         if target.target_completed:
-            return Response({"error": "Target is already completed. Cannot update."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Target is already completed. Cannot update."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return super().update(request, *args, **kwargs)
 
@@ -98,7 +101,9 @@ class MissionViewSet(viewsets.ModelViewSet):
     def assign_cat(self, request, pk=None):
         mission = self.get_object()
         if not mission.cat:
-            return Response({"error": "could not be completed without a cat"}, status=400)
+            return Response(
+                {"error": "could not be completed without a cat"}, status=400
+            )
         if mission.mission_completed:
             return Response({"error": "Mission already completed"}, status=400)
 
@@ -114,17 +119,20 @@ class MissionViewSet(viewsets.ModelViewSet):
         if mission.mission_completed:
             return Response(
                 {"error": "Mission is already completed. Cannot update."},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
             target = Target.objects.get(id=target_id, mission=mission)
         except Target.DoesNotExist:
-            return Response({"error": "Target not found"},
-                            status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Target not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if target.target_completed:
             return Response(
                 {"error": "Target is already completed. Cannot update."},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         serializer = TargetSerializer(target, data=request.data, partial=True)
         if serializer.is_valid():
@@ -136,8 +144,7 @@ class MissionViewSet(viewsets.ModelViewSet):
         mission = self.get_object()
         if mission.cat:
             return Response(
-                {
-                    "error": "Mission cannot be deleted because it is assigned to a cat"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "Mission cannot be deleted because it is assigned to a cat"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         return super().destroy(request, *args, **kwargs)
