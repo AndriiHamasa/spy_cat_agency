@@ -3,9 +3,16 @@ from django.db import models
 
 class Cat(models.Model):
     name = models.CharField(max_length=100)
-    years = models.IntegerField()
+    years = models.PositiveSmallIntegerField()
     breed = models.CharField(max_length=100)
-    salary = models.IntegerField()
+    salary = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "years", "breed", "salary"],
+                name="unique_cat_combination")
+        ]
 
 
 class Mission(models.Model):
